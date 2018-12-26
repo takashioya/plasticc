@@ -1,6 +1,3 @@
-from utils import * 
-import gc
-from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 import feather
@@ -9,11 +6,10 @@ sys.path.append('..')
 from fe_extract.make_features_01 import * 
 from utils import * 
 
+
 def main():
     tr = feather.read_dataframe('../others/tr.feather')
     tr_m = feather.read_dataframe('../others/tr_m.feather')
-    tes = feather.read_dataframe('../others/tes.feather')
-    tes_m = feather.read_dataframe('../others/tes_m.feather')
 
     f_tr = get_metadata(tr_m)
     save_df_as_npy(f_tr, 'meta', 'main', 'train')
@@ -183,6 +179,6 @@ def main():
     
     print('===== Process sucessfuly finished =====')
 
+
 if __name__ == '__main__':
     main()
-    
