@@ -1,24 +1,16 @@
-import pandas as pd
-import numpy as np
-import os
 import sys
 sys.path.append('..')
-import re
 from scripts.utils import * 
 from tqdm import tqdm
-import pickle
 import feather
+import numpy as np
+import pandas as pd
 
 def make_sub_with_mamas_c99_handling(exp_name):
     data_types = ['ex_gal', 'ex_gal_spec', 'gal']
-    tr_m = feather.read_dataframe('../others/tr_m.feather')
     tes_m = feather.read_dataframe('../others/tes_m.feather')
     le = load_pickle('../others/label_encoder.pkl')
-    y = le.transform(np.load('../others/train_target.npy'))
-    distmod_mask = np.load('../others/distmod_mask.npy')
     W = np.load('../others/W.npy')
-    ex_gal_labels = np.where(np.bincount(y[distmod_mask]) != 0)[0]
-    gal_labels = np.where(np.bincount(y[~distmod_mask]) != 0)[0]
     ex_gal_index = ((tes_m['hostgal_specz'].isnull()) & (~tes_m['distmod'].isnull())).values
     ex_gal_spec_index = ((~tes_m['hostgal_specz'].isnull()) & (~tes_m['distmod'].isnull())).values
     gal_index = (tes_m['distmod'].isnull()).values
@@ -26,7 +18,7 @@ def make_sub_with_mamas_c99_handling(exp_name):
     ex_gal_spec_pred = np.load('../preds/' + data_types[1] + '_pred_' + exp_name + '.npy')
     gal_pred = np.load('../preds/' + data_types[2] + '_pred_' + exp_name + '.npy')
 
-    #prepare subs for pseudo-labelling
+    # prepare subs for pseudo-labelling
     sub = pd.read_csv('../data/sample_submission.csv.zip')
     cols = sub.columns[1:-1]
     sub_86_s = ['pred16r4qq_0.csv', 'pred16r4qq_1.csv', 'pred16r4qq_2.csv', 'pred16r4qq_3.csv']
@@ -45,32 +37,33 @@ def make_sub_with_mamas_c99_handling(exp_name):
         sub['class_' + str(le.inverse_transform([i])[0])] = new_pred[:, i]
     sub['class_99'] = W[0]
 
-    sub = sub.astype({'object_id' : np.int32})
-    sub = sub.astype({el : np.float32 for el in sub.columns[1:]})
+    sub = sub.astype({'object_id': np.int32})
+    sub = sub.astype({el: np.float32 for el in sub.columns[1:]})
 
-    sub_dropped = sub.drop(['object_id', 'class_99'], axis = 1)
+    sub_dropped = sub.drop(['object_id', 'class_99'], axis=1)
     sub_dropped = sub_dropped * 1/(1 - sub['class_99'].iloc[0])
     sub_dropped.loc[pseudo_idx] = best_sub_dp.loc[pseudo_idx]
-    max_lst = sub_dropped.max(axis = 1)
+    max_lst = sub_dropped.max(axis=1)
 
     coef_start = ((1 + W[0]) * W[0])/((1- np.array(max_lst)).mean())
     y_all = 1 - np.array(max_lst)
 
     scores = []
     for coef in tqdm(np.arange(coef_start, 0.60, 0.0001)):
-        scores.append((np.mean((coef * y_all)/(1 + coef * y_all)) -W[0]) ** 2)
+        scores.append((np.mean((coef * y_all)/(1 + coef * y_all)) - W[0]) ** 2)
 
     coef_opt = np.arange(coef_start, 0.60, 0.0001)[np.argmin(scores)]
     assert(np.sqrt(np.min(scores)) < 1e-4)
 
     sub_dropped_cp = sub_dropped.copy()
     sub_dropped_cp['class_99'] = (1 - np.array(max_lst)) * coef_opt
-    sub_dropped_cp = sub_dropped_cp.divide(sub_dropped_cp.sum(axis = 1), axis = 0)
+    sub_dropped_cp = sub_dropped_cp.divide(sub_dropped_cp.sum(axis=1), axis=0)
     sub_dropped_cp['object_id'] = sub['object_id']
     sub_dropped_cp = sub_dropped_cp[sub.columns]
 
-    sub_dropped_cp.to_csv('../sub/' + exp_name + '_re' + '.csv.gz', index=False, compression = 'gzip')
-    
+    sub_dropped_cp.to_csv('../sub/' + exp_name + '_re' + '.csv.gz', index=False, compression='gzip')
+
+
 def make_mamas_averaged_model_with_nyanp_c99_handling():
     tes_m = feather.read_dataframe('../others/tes_m.feather')
     
@@ -82,8 +75,7 @@ def make_mamas_averaged_model_with_nyanp_c99_handling():
     exp_46_4 = get_raw_from_mamas_sub(pd.read_csv('../sub/exp_46_4_re.csv.gz'))
     exp_43_3 = get_raw_from_mamas_sub(pd.read_csv('../sub/exp_43_3_re.csv.gz'))
     
-    raw_av = (exp_46_2 + exp_44_2 + exp_40_4 + exp_46_1 + exp_45_3 + \
-          exp_43_3 + exp_46_4)/7
+    raw_av = (exp_46_2 + exp_44_2 + exp_40_4 + exp_46_1 + exp_45_3 + exp_43_3 + exp_46_4)/7
     
     is_extra = ~tes_m['distmod'].isnull()
     cols = raw_av.columns
@@ -94,12 +86,13 @@ def make_mamas_averaged_model_with_nyanp_c99_handling():
     raw_av['class_99'] *= 1.0 - is_extra * 0.1
     
     sub = pd.read_csv('../data/sample_submission.csv.zip')
-    raw_av = raw_av.divide(raw_av.sum(axis = 1), axis = 0)
+    raw_av = raw_av.divide(raw_av.sum(axis=1), axis=0)
     raw_av['object_id'] = sub['object_id']
     sub = raw_av.copy()
     
-    sub.to_csv('../sub/mamas_average_7_model_for_host.csv.gz', index = False, compression = 'gzip')
-    
+    sub.to_csv('../sub/mamas_average_7_model_for_host.csv.gz', index=False, compression='gzip')
+
+
 def make_team_clean_averaged_model():
     # I decided these weights using oof prediction with hyperopt.
     space = {'w3': 0.5, 'w4': 0.46, 'w12': 0.66, 'w13': 0.35000000000000003, 
@@ -132,7 +125,7 @@ def make_team_clean_averaged_model():
     for i in range(len(cols)):
         c = cols[i]
         gbdt_av[c] = avg_7_mamas[c] * coefs_gbdt[i] + avg_4_nyanp[c] * (1 - coefs_gbdt[i])
-    gbdt_av = gbdt_av.divide(gbdt_av.sum(axis = 1), axis = 0)
+    gbdt_av = gbdt_av.divide(gbdt_av.sum(axis=1), axis=0)
 
     nn_av = avg_3_yuval
 
@@ -140,10 +133,10 @@ def make_team_clean_averaged_model():
     for i in range(len(cols)):
         c = cols[i]
         raw_av[c] = gbdt_av[c] * coefs[i] + nn_av[c] * (1 - coefs[i])
-    raw_av_base = raw_av.divide(raw_av.sum(axis = 1), axis = 0)
+    raw_av_base = raw_av.divide(raw_av.sum(axis=1), axis=0)
 
     cols = raw_av_base.columns
-    weight_dict = {col : 1 for col in cols}
+    weight_dict = {col:1 for col in cols}
     coef_ex_gal = 0.9
     coef_gal = 0.2
 
@@ -162,19 +155,11 @@ def make_team_clean_averaged_model():
     sub = raw_av.copy()
 
     sub.to_csv('../sub/clean_average_for_host.csv.gz', index = False, compression = 'gzip')
-    
+
+
 def make_host_sub_with_special_c99_handling():
-    tr_m = feather.read_dataframe('../others/tr_m.feather')
     tes_m = feather.read_dataframe('../others/tes_m.feather')
     sub = pd.read_csv('../data/sample_submission.csv.zip')
-    cols = sub.columns[1:-1]
-
-    le = load_pickle('../others/label_encoder.pkl')
-    y = le.transform(np.load('../others/train_target.npy'))
-    tr_m = feather.read_dataframe('../others/tr_m.feather')
-    distmod_mask = np.load('../others/distmod_mask.npy')
-    ex_gal_labels = np.where(np.bincount(y[distmod_mask]) != 0)[0]
-    gal_labels = np.where(np.bincount(y[~distmod_mask]) != 0)[0]
 
     raw_av_base = get_raw_from_mamas_sub(pd.read_csv('../sub/clean_average_for_host.csv.gz'))
     cols = raw_av_base.columns
@@ -194,18 +179,19 @@ def make_host_sub_with_special_c99_handling():
     c62 = raw_av.loc[is_extra, 'class_62']
     c95 = raw_av.loc[is_extra, 'class_95']
 
-    raw_av.loc[is_extra, 'class_99'] = (c42 + c52 + c62 + c95) ** 2.5 *  (1 - c95 - c62) ** 0.635
+    raw_av.loc[is_extra, 'class_99'] = (c42 + c52 + c62 + c95) ** 2.5 * (1 - c95 - c62) ** 0.635
     raw_av['class_99'] *= 1.0 - ~is_extra * (1 - coef_gal)
     raw_av['class_99'] *= 1.0 - is_extra * (1 - coef_ex_gal)
-    raw_av = raw_av.divide(raw_av.sum(axis = 1), axis = 0)
+    raw_av = raw_av.divide(raw_av.sum(axis=1), axis=0)
     raw_av['object_id'] = sub['object_id']
     sub = raw_av.copy()
 
     assert(np.all(raw_av.min() >= 0))
-    assert(np.all(np.isclose(sub.drop(['object_id'], axis = 1).sum(axis = 1), 1)))
+    assert(np.all(np.isclose(sub.drop(['object_id'], axis=1).sum(axis=1), 1)))
 
-    sub.to_csv('../sub/host_sub.csv.gz', index = False, compression = 'gzip')    
-    
+    sub.to_csv('../sub/host_sub.csv.gz', index=False, compression='gzip')
+
+
 def main():
     exp_names = ['exp_46_2', 'exp_44_2', 'exp_40_4', 'exp_46_1', 'exp_45_3', 'exp_46_4', 'exp_43_3']
     for exp_name in tqdm(exp_names):
@@ -218,6 +204,7 @@ def main():
     make_host_sub_with_special_c99_handling()
             
     print('===== Process sucessfuly finished =====')
+
 
 if __name__ == '__main__':
     main()
