@@ -1,12 +1,7 @@
-import pandas as pd
+from utils import *
 import numpy as np
-import pickle
-import re
 import feather
 import gc
-import os
-import sys
-from utils import *
 from catboost import CatBoostClassifier, FeaturesData
 from tqdm import tqdm
 

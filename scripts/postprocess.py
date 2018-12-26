@@ -1,9 +1,9 @@
-import sys
 from utils import *
 from tqdm import tqdm
 import feather
 import numpy as np
 import pandas as pd
+
 
 def make_sub_with_mamas_c99_handling(exp_name):
     data_types = ['ex_gal', 'ex_gal_spec', 'gal']

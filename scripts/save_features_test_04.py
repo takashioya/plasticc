@@ -1,17 +1,14 @@
-from utils import * 
 import gc
-from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 import feather
 import sys
 sys.path.append('..')
-from fe_extract.make_features_03 import * 
-from utils import * 
+from fe_extract.make_features_04 import *
+from utils import *
+
 
 def main():
-    tr = feather.read_dataframe('../others/tr.feather')
-    tr_m = feather.read_dataframe('../others/tr_m.feather')
     tes = feather.read_dataframe('../others/tes.feather')
     tes_m = feather.read_dataframe('../others/tes_m.feather')
     
@@ -140,6 +137,7 @@ def main():
     gc.collect()
     
     print('===== Process sucessfuly finished =====')
+
 
 if __name__ == '__main__':
     main()

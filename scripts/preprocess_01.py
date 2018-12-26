@@ -1,6 +1,6 @@
+from utils import *
 import pandas as pd
 import numpy as np
-from utils import * 
 
 
 def main():

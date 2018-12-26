@@ -1,17 +1,14 @@
 from utils import * 
 import gc
-from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 import feather
 import sys
 sys.path.append('..')
-from fe_extract.make_features_01 import * 
-from utils import * 
+from fe_extract.make_features_01 import *
+
 
 def main():
-    tr = feather.read_dataframe('../others/tr.feather')
-    tr_m = feather.read_dataframe('../others/tr_m.feather')
     tes = feather.read_dataframe('../others/tes.feather')
     tes_m = feather.read_dataframe('../others/tes_m.feather')
 
@@ -57,7 +54,6 @@ def main():
 
     f_tes = get_flux_stats_passband(tes_m, tes)
     save_df_as_npy(f_tes, 'ts', 'flux_stats', 'test', path='../features/')
-
 
     f_tes = get_flux_stats_detected_passband(tes_m, tes)
     save_df_as_npy(f_tes, 'ts', 'flux_stats', 'test', path='../features/')
@@ -234,6 +230,7 @@ def main():
     gc.collect()
     
     print('===== Process sucessfuly finished =====')
+
 
 if __name__ == '__main__':
     main()

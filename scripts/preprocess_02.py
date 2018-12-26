@@ -1,14 +1,10 @@
-import pandas as pd
+from utils import *
 import numpy as np
-from utils import * 
 import feather
 from sklearn.preprocessing import LabelEncoder
 
 def main():
-    tr = feather.read_dataframe('../others/tr.feather')
     tr_m = feather.read_dataframe('../others/tr_m.feather')
-    tes = feather.read_dataframe('../others/tes.feather')
-    tes_m = feather.read_dataframe('../others/tes_m.feather')
 
     np.save('../others/train_target.npy', tr_m['target'].values)
     y_orig = np.load('../others/train_target.npy')
@@ -19,6 +15,7 @@ def main():
     np.save('../others/distmod_mask.npy', (~tr_m['distmod'].isnull()).values)
            
     print('===== Process sucessfuly finished =====')
+
 
 if __name__ == '__main__':
     main()
