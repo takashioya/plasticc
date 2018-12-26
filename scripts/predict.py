@@ -1,23 +1,22 @@
-from catboost import CatBoostClassifier, FeaturesData
 import pandas as pd
 import numpy as np
+import pickle
+import re
+import feather
+import gc
 import os
 import sys
 sys.path.append('..')
-import re
-from scripts.utils import * 
+from scripts.utils import *
+from catboost import CatBoostClassifier, FeaturesData
 from tqdm import tqdm
-import pickle
-import feather
-import gc
+
 
 def run(exp_name, data_type):
-    tr_m = feather.read_dataframe('../others/tr_m.feather')
     tes_m = feather.read_dataframe('../others/tes_m.feather')
     le = load_pickle('../others/label_encoder.pkl')
     y = le.transform(np.load('../others/train_target.npy'))
     distmod_mask = np.load('../others/distmod_mask.npy')
-    W = np.load('../others/W.npy')
     ex_gal_labels = np.where(np.bincount(y[distmod_mask]) != 0)[0]
     gal_labels = np.where(np.bincount(y[~distmod_mask]) != 0)[0]
     ex_gal_index = ((tes_m['hostgal_specz'].isnull()) & (~tes_m['distmod'].isnull())).values
@@ -52,19 +51,18 @@ def run(exp_name, data_type):
     else: 
         raise Error
     gc.collect()
-    
+
+
 def main():
     exp_names = ['exp_46_2', 'exp_44_2', 'exp_40_4', 'exp_46_1', 'exp_45_3', 'exp_46_4', 'exp_43_3']
     data_types = ['ex_gal', 'ex_gal_spec', 'gal']
     
     for exp_name in tqdm(exp_names):
         for data_type in tqdm(data_types):
-            #if os.path.exists('../preds/' + data_type + '_pred_' + exp_name + '.npy'):
-            #    print('../preds/' + data_type + '_pred_' + exp_name + '.npy' + ' already exists!')
-            #    continue
             run(exp_name, data_type)
             
     print('===== Process sucessfuly finished =====')
+
 
 if __name__ == '__main__':
     main()
