@@ -1,6 +1,3 @@
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
 import lightgbm as lgb
 import sys
 import gc
@@ -8,6 +5,10 @@ sys.path.append('..')
 from scripts.utils import * 
 from joblib import Parallel, delayed
 from itertools import chain
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
 
 def save_hostgal_photoz_to_distmod_lgb(tr_m, tes_m):
     tr_wna = tr_m[~tr_m['distmod'].isnull()]
@@ -39,13 +40,15 @@ def save_hostgal_photoz_to_distmod_lgb(tr_m, tes_m):
     gbm = lgb.train(params, dtr, num_boost_round = 400, valid_sets = [dte])
     save_pickle(gbm, '../models/exp_6_3_1.pkl')
 
+
 def get_specz_dist(tr_m, gbm):
     tr_m_cp = tr_m.copy()
     nan_mask = (tr_m_cp['hostgal_specz'] != 0) & (~tr_m_cp['hostgal_specz'].isnull())
     tr_m_cp.loc[nan_mask, 'specz_dist'] = gbm.predict(tr_m_cp[nan_mask][['hostgal_specz']])
     specz_dist = tr_m_cp[['specz_dist']].astype(np.float32)
     return specz_dist
-    
+
+
 def get_specz_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr, data_type):
     col_name_agg = 'specz_dist_squared_shifted_flux_min_corrected'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -70,6 +73,7 @@ def get_specz_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr, d
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_specz_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr_m, tr, data_type):
     col_name_agg = 'specz_dist_squared_shifted_flux_min_corrected'
@@ -96,6 +100,7 @@ def get_specz_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_specz_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr, data_type):
     col_name_agg = 'specz_dist_squared_shifted_flux_min_corrected'
@@ -124,6 +129,7 @@ def get_diff_specz_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, 
     gp.columns = ['diff_' + col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_specz_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr_m, tr, data_type):
     col_name_agg = 'specz_dist_squared_shifted_flux_min_corrected'
@@ -155,6 +161,7 @@ def get_diff_specz_dist_squared_shifted_flux_min_corrected_stats_detected_passba
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mjd_flux_nan_masks(tr_m, tr):
     new_df = pd.DataFrame(np.repeat(tr_m['object_id'], 6), columns = ['object_id']).reset_index(drop = True).reset_index()
     new_df['passband'] = np.repeat(np.arange(6)[np.newaxis, ...], tr_m.shape[0], axis = 0).ravel()
@@ -166,6 +173,7 @@ def get_mjd_flux_nan_masks(tr_m, tr):
     flux_uns = unstack['flux'].values
     nan_masks = ~np.isnan(mjd_uns)
     return mjd_uns, flux_uns, nan_masks
+
 
 def process_01(mjd, flux):
     n_s = [0.1, 1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90]
@@ -198,6 +206,7 @@ def process_01(mjd, flux):
             x[j * 2 + 1] = np.abs(right_diff)
     return x
 
+
 def proc_X_01(tr_m, X):
     n_s = [0.1, 1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90]
     X_reshaped = X.reshape(tr_m.shape[0], 6 * 2 * len(n_s))
@@ -210,12 +219,14 @@ def proc_X_01(tr_m, X):
     f_tr.columns = cols
     return f_tr
 
+
 def get_days_from_peak_to_n_percent_flux(tr_m, tr):
     mjd_uns, flux_uns, nan_masks = get_mjd_flux_nan_masks(tr_m, tr)
     X = np.array(Parallel(n_jobs=8, verbose=10)( [delayed(process_01)(mjd[nan_mask], flux[nan_mask]) \
                                               for mjd, flux, nan_mask in zip(mjd_uns, flux_uns, nan_masks)] ))
     f_tr = proc_X_01(tr_m, X)
     return f_tr
+
 
 def get_mjd_flux_nan_masks_min_corrected(tr_m, tr):
     flux_min = tr.groupby(['object_id', 'passband'])['flux'].agg(['min']).reset_index()
@@ -233,6 +244,7 @@ def get_mjd_flux_nan_masks_min_corrected(tr_m, tr):
     flux_uns = unstack['shifted_flux'].values
     nan_masks = ~np.isnan(mjd_uns)
     return mjd_uns, flux_uns, nan_masks
+
 
 def process_02(mjd, flux):
     n_s = [0.1, 1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90]
@@ -265,6 +277,7 @@ def process_02(mjd, flux):
             x[j * 2 + 1] = np.abs(right_diff)
     return x
 
+
 def proc_X_02(tr_m, X):
     n_s = [0.1, 1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90]
     X_reshaped = X.reshape(tr_m.shape[0], 6 * 2 * len(n_s))
@@ -277,12 +290,14 @@ def proc_X_02(tr_m, X):
     f_tr.columns = cols
     return f_tr
 
+
 def get_days_from_peak_to_n_percent_flux_min_corrected(tr_m, tr):
     mjd_uns, flux_uns, nan_masks = get_mjd_flux_nan_masks_min_corrected(tr_m, tr)
     X = np.array(Parallel(n_jobs=8, verbose=10)( [delayed(process_02)(mjd[nan_mask], flux[nan_mask]) \
                                               for mjd, flux, nan_mask in zip(mjd_uns, flux_uns, nan_masks)] ))
     f_tr = proc_X_02(tr_m, X)
     return f_tr
+
 
 def process_03(mjd, flux):
     n_s = [0.1, 0.2, 0.5, 1, 2, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 200, 250]
@@ -309,6 +324,7 @@ def process_03(mjd, flux):
         x[j] = ratio
     return x
 
+
 def proc_X_03(tr_m, X):
     n_s = [0.1, 0.2, 0.5, 1, 2, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 200, 250]
     n_s += [-el for el in n_s]
@@ -320,12 +336,14 @@ def proc_X_03(tr_m, X):
     f_tr.columns = cols
     return f_tr
 
+
 def get_from_peak_to_percent_flux_n_days(tr_m, tr):
     mjd_uns, flux_uns, nan_masks = get_mjd_flux_nan_masks(tr_m, tr)
     X = np.array(Parallel(n_jobs=8, verbose=10)( [delayed(process_03)(mjd[nan_mask], flux[nan_mask]) \
                                               for mjd, flux, nan_mask in zip(mjd_uns, flux_uns, nan_masks)] ))
     f_tr = proc_X_03(tr_m, X)
     return f_tr
+
 
 def process_04(mjd, flux):
     n_s = [0.1, 0.2, 0.5, 1, 2, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 200, 250]
@@ -352,6 +370,7 @@ def process_04(mjd, flux):
         x[j] = ratio
     return x
 
+
 def proc_X_04(tr_m, X):
     n_s = [0.1, 0.2, 0.5, 1, 2, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 150, 200, 250]
     n_s += [-el for el in n_s]
@@ -363,12 +382,14 @@ def proc_X_04(tr_m, X):
     f_tr.columns = cols
     return f_tr
 
+
 def get_from_peak_to_percent_flux_n_days_min_corrected(tr_m, tr):
     mjd_uns, flux_uns, nan_masks = get_mjd_flux_nan_masks(tr_m, tr)
     X = np.array(Parallel(n_jobs=8, verbose=10)( [delayed(process_04)(mjd[nan_mask], flux[nan_mask]) \
                                               for mjd, flux, nan_mask in zip(mjd_uns, flux_uns, nan_masks)] ))
     f_tr = proc_X_04(tr_m, X)
     return f_tr
+
 
 def get_color_change_passband(data_type):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'std']
@@ -385,6 +406,7 @@ def get_color_change_passband(data_type):
             f_tr[col_name] = f[:, i]
     return f_tr
 
+
 def get_diff_color_change_passband(data_type):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'std']
     funcs = [np.mean, np.sum, np.median, np.min, np.max, np.std]
@@ -400,6 +422,7 @@ def get_diff_color_change_passband(data_type):
         for i, col_name in enumerate(col_names):
             f_tr[col_name] = f[:, i]
     return f_tr
+
 
 def get_mm_scaled_mjd_flux_normalized_per_object_min_corrected(tr_m, tr, length):
     flux_min = tr.groupby(['object_id', 'passband'])['flux'].agg(['min']).reset_index()

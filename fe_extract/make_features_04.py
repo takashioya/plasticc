@@ -1,9 +1,9 @@
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
 import sys
 sys.path.append('..')
-from scripts.utils import * 
+from scripts.utils import *
+import numpy as np
+import pandas as pd
+
 
 def get_mjd_skew_kurt_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -14,6 +14,7 @@ def get_mjd_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mjd_skew_kurt_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1]
@@ -23,6 +24,7 @@ def get_mjd_skew_kurt_detected_passband(tes_m, tes):
     gp.columns = ['mjd_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_mjd_skew_kurt_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -37,6 +39,7 @@ def get_diff_mjd_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_mjd_skew_kurt_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1].copy()
@@ -50,6 +53,7 @@ def get_diff_mjd_skew_kurt_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_skew_kurt_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = get_skew_kurt_from_df(tes, 'flux', ['object_id', 'passband'])
@@ -58,6 +62,7 @@ def get_flux_skew_kurt_passband(tes_m, tes):
     gp.columns = ['flux_' + el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_skew_kurt_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -68,6 +73,7 @@ def get_flux_skew_kurt_detected_passband(tes_m, tes):
     gp.columns = ['flux_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_skew_kurt_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -81,6 +87,7 @@ def get_diff_flux_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_skew_kurt_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1].copy()
@@ -93,6 +100,7 @@ def get_diff_flux_skew_kurt_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_err_skew_kurt_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = get_skew_kurt_from_df(tes, 'flux_err', ['object_id', 'passband'])
@@ -101,6 +109,7 @@ def get_flux_err_skew_kurt_passband(tes_m, tes):
     gp.columns = ['flux_err_' + el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_err_skew_kurt_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -111,6 +120,7 @@ def get_flux_err_skew_kurt_detected_passband(tes_m, tes):
     gp.columns = ['flux_err_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_err_skew_kurt_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -124,6 +134,7 @@ def get_diff_flux_err_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_err_skew_kurt_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1].copy()
@@ -135,6 +146,7 @@ def get_diff_flux_err_skew_kurt_detected_passband(tes_m, tes):
     gp.columns = ['diff_flux_err_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_curve_angle_skew_kurt_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -153,6 +165,7 @@ def get_curve_angle_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_curve_angle_skew_kurt_detected_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -169,6 +182,7 @@ def get_curve_angle_skew_kurt_detected_passband(tes_m, tes):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_curve_angle_skew_kurt_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -190,6 +204,7 @@ def get_diff_curve_angle_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_curve_angle_skew_kurt_detected_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -210,6 +225,7 @@ def get_diff_curve_angle_skew_kurt_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_abs_curve_angle_skew_kurt_passband(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -226,6 +242,7 @@ def get_abs_curve_angle_skew_kurt_passband(tes_m, tes):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_abs_curve_angle_skew_kurt_detected_passband(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
@@ -244,6 +261,7 @@ def get_abs_curve_angle_skew_kurt_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_skew_kurt_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -258,6 +276,7 @@ def get_flux_n_sigma_skew_kurt_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_skew_kurt_detected_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -271,6 +290,7 @@ def get_flux_n_sigma_skew_kurt_detected_passband(tes_m, tes, n):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_n_sigma_skew_kurt_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
@@ -289,6 +309,7 @@ def get_diff_flux_n_sigma_skew_kurt_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_n_sigma_skew_kurt_detected_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -306,6 +327,7 @@ def get_diff_flux_n_sigma_skew_kurt_detected_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_skew_kurt_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -321,6 +343,7 @@ def get_mm_scaled_flux_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_skew_kurt_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -338,6 +361,7 @@ def get_mm_scaled_flux_skew_kurt_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_skew_kurt_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -357,6 +381,7 @@ def get_diff_mm_scaled_flux_skew_kurt_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_skew_kurt_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -378,6 +403,7 @@ def get_diff_mm_scaled_flux_skew_kurt_detected_passband(tes_m, tes):
     
     return merged.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_skew_kurt_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -397,6 +423,7 @@ def get_dist_squared_shifted_flux_skew_kurt_passband(tr_m, tr):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_skew_kurt_detected_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -418,6 +445,7 @@ def get_dist_squared_shifted_flux_skew_kurt_detected_passband(tr_m, tr):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_skew_kurt_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -441,6 +469,7 @@ def get_diff_dist_squared_shifted_flux_skew_kurt_passband(tr_m, tr):
     gp.columns = ['diff_' + col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_skew_kurt_detected_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'

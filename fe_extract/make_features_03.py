@@ -1,9 +1,10 @@
+import sys
+sys.path.append('..')
+from scripts.utils import *
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-import sys
-sys.path.append('..')
-from scripts.utils import * 
+
 
 def get_ddf_flux_sorted_diff_stats(tes_m, tes):
     num_group = 3
@@ -43,6 +44,7 @@ def get_ddf_flux_sorted_diff_stats(tes_m, tes):
     gp_num_all = pd.concat(gp_nums, axis = 1)
     merged = pd.merge(tes_m[['object_id']], gp_num_all.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_ddf_flux_detected_sorted_diff_stats(tes_m, tes):
     num_group = 3
@@ -86,6 +88,7 @@ def get_ddf_flux_detected_sorted_diff_stats(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp_num_all.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_ddf_diff_flux_sorted_diff_stats(tes_m, tes):
     num_group = 3
     threshold = 200
@@ -128,6 +131,7 @@ def get_ddf_diff_flux_sorted_diff_stats(tes_m, tes):
     gp_num_all = pd.concat(gp_nums, axis = 1)
     merged = pd.merge(tes_m[['object_id']], gp_num_all.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_ddf_diff_flux_detected_sorted_diff_stats(tes_m, tes):
     num_group = 3
@@ -175,12 +179,14 @@ def get_ddf_diff_flux_detected_sorted_diff_stats(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp_num_all.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mjd_stats_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = tes.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_mjd_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
@@ -190,6 +196,7 @@ def get_mjd_stats_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_mjd_stats_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
@@ -202,6 +209,7 @@ def get_diff_mjd_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_mjd_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -213,12 +221,14 @@ def get_diff_mjd_stats_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_stats_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = tes.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
@@ -228,6 +238,7 @@ def get_flux_stats_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_stats_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
@@ -240,6 +251,7 @@ def get_diff_flux_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -251,12 +263,14 @@ def get_diff_flux_stats_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_err_stats_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = tes.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_err_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
@@ -266,6 +280,7 @@ def get_flux_err_stats_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_err_stats_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
@@ -278,6 +293,7 @@ def get_diff_flux_err_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_err_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -288,6 +304,7 @@ def get_diff_flux_err_stats_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_curve_angle_stats_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -303,6 +320,7 @@ def get_curve_angle_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_curve_angle_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -317,6 +335,7 @@ def get_curve_angle_stats_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_curve_angle_stats_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -336,6 +355,7 @@ def get_diff_curve_angle_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_curve_angle_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -354,6 +374,7 @@ def get_diff_curve_angle_stats_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_abs_curve_angle_stats_p_ignored(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -367,6 +388,7 @@ def get_abs_curve_angle_stats_p_ignored(tes_m, tes):
     gp = tes_cp.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_abs_curve_angle_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
@@ -383,6 +405,7 @@ def get_abs_curve_angle_stats_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_stats_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -393,6 +416,7 @@ def get_flux_n_sigma_stats_p_ignored(tes_m, tes, n):
     gp = tes_cp.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_n_sigma_stats_detected_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
@@ -405,6 +429,7 @@ def get_flux_n_sigma_stats_detected_p_ignored(tes_m, tes, n):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_n_sigma_stats_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
@@ -421,6 +446,7 @@ def get_diff_flux_n_sigma_stats_p_ignored(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_n_sigma_stats_detected_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -435,6 +461,7 @@ def get_diff_flux_n_sigma_stats_detected_p_ignored(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_stats_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -447,6 +474,7 @@ def get_mm_scaled_flux_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -462,6 +490,7 @@ def get_mm_scaled_flux_stats_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_stats_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -479,6 +508,7 @@ def get_diff_mm_scaled_flux_stats_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_stats_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -498,6 +528,7 @@ def get_diff_mm_scaled_flux_stats_detected_p_ignored(tes_m, tes):
     
     return merged.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_stats_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -514,6 +545,7 @@ def get_dist_squared_shifted_flux_stats_p_ignored(tr_m, tr):
     gp = tr_cp.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_stats_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -533,6 +565,7 @@ def get_dist_squared_shifted_flux_stats_detected_p_ignored(tr_m, tr):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_stats_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -554,6 +587,7 @@ def get_diff_dist_squared_shifted_flux_stats_p_ignored(tr_m, tr):
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_stats_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -577,6 +611,7 @@ def get_diff_dist_squared_shifted_flux_stats_detected_p_ignored(tr_m, tr):
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_min_corrected_stats_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -594,6 +629,7 @@ def get_dist_squared_shifted_flux_min_corrected_stats_p_ignored(tr_m, tr):
     gp = tr_cp.groupby(['object_id'])[col_name_agg].agg(stats_agg).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_min_corrected_stats_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -614,6 +650,7 @@ def get_dist_squared_shifted_flux_min_corrected_stats_detected_p_ignored(tr_m, t
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_min_corrected_stats_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -636,6 +673,7 @@ def get_diff_dist_squared_shifted_flux_min_corrected_stats_p_ignored(tr_m, tr):
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_min_corrected_stats_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -660,12 +698,14 @@ def get_diff_dist_squared_shifted_flux_min_corrected_stats_detected_p_ignored(tr
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mjd_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = get_skew_kurt_from_df_ignored(tes, col_name_agg, ['object_id']).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_mjd_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
@@ -675,6 +715,7 @@ def get_mjd_skew_kurt_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_mjd_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
@@ -687,6 +728,7 @@ def get_diff_mjd_skew_kurt_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_mjd_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mjd'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -698,12 +740,14 @@ def get_diff_mjd_skew_kurt_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = get_skew_kurt_from_df_ignored(tes, col_name_agg, ['object_id']).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
@@ -713,6 +757,7 @@ def get_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
@@ -725,6 +770,7 @@ def get_diff_flux_skew_kurt_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -736,12 +782,14 @@ def get_diff_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_err_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = get_skew_kurt_from_df_ignored(tes, col_name_agg, ['object_id']).rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_err_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
@@ -751,6 +799,7 @@ def get_flux_err_skew_kurt_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_err_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
@@ -763,6 +812,7 @@ def get_diff_flux_err_skew_kurt_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_err_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'flux_err'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -773,6 +823,7 @@ def get_diff_flux_err_skew_kurt_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_curve_angle_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -789,6 +840,7 @@ def get_curve_angle_skew_kurt_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_curve_angle_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -803,6 +855,7 @@ def get_curve_angle_skew_kurt_detected_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_curve_angle_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -822,6 +875,7 @@ def get_diff_curve_angle_skew_kurt_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_curve_angle_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -840,6 +894,7 @@ def get_diff_curve_angle_skew_kurt_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_abs_curve_angle_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -854,6 +909,7 @@ def get_abs_curve_angle_skew_kurt_p_ignored(tes_m, tes):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_abs_curve_angle_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
@@ -870,6 +926,7 @@ def get_abs_curve_angle_skew_kurt_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_skew_kurt_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -882,6 +939,7 @@ def get_flux_n_sigma_skew_kurt_p_ignored(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_skew_kurt_detected_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -893,6 +951,7 @@ def get_flux_n_sigma_skew_kurt_detected_p_ignored(tes_m, tes, n):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_n_sigma_skew_kurt_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
@@ -909,6 +968,7 @@ def get_diff_flux_n_sigma_skew_kurt_p_ignored(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_n_sigma_skew_kurt_detected_p_ignored(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -922,6 +982,7 @@ def get_diff_flux_n_sigma_skew_kurt_detected_p_ignored(tes_m, tes, n):
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -937,6 +998,7 @@ def get_mm_scaled_flux_skew_kurt_p_ignored(tes_m, tes):
     
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -951,6 +1013,7 @@ def get_mm_scaled_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_skew_kurt_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -968,6 +1031,7 @@ def get_diff_mm_scaled_flux_skew_kurt_p_ignored(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -987,6 +1051,7 @@ def get_diff_mm_scaled_flux_skew_kurt_detected_p_ignored(tes_m, tes):
     
     return merged.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_skew_kurt_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -1004,6 +1069,7 @@ def get_dist_squared_shifted_flux_skew_kurt_p_ignored(tr_m, tr):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_skew_kurt_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -1023,6 +1089,7 @@ def get_dist_squared_shifted_flux_skew_kurt_detected_p_ignored(tr_m, tr):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_skew_kurt_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -1044,6 +1111,7 @@ def get_diff_dist_squared_shifted_flux_skew_kurt_p_ignored(tr_m, tr):
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_skew_kurt_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -1067,6 +1135,7 @@ def get_diff_dist_squared_shifted_flux_skew_kurt_detected_p_ignored(tr_m, tr):
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_min_corrected_skew_kurt_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -1085,6 +1154,7 @@ def get_dist_squared_shifted_flux_min_corrected_skew_kurt_p_ignored(tr_m, tr):
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_min_corrected_skew_kurt_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -1105,6 +1175,7 @@ def get_dist_squared_shifted_flux_min_corrected_skew_kurt_detected_p_ignored(tr_
     .rename(columns = lambda x : col_name_agg + '_' + x + '_p_ignored_detected')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_min_corrected_skew_kurt_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -1127,6 +1198,7 @@ def get_diff_dist_squared_shifted_flux_min_corrected_skew_kurt_p_ignored(tr_m, t
     .rename(columns = lambda x : 'diff_' + col_name_agg + '_' + x + '_p_ignored')
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_min_corrected_skew_kurt_detected_p_ignored(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'

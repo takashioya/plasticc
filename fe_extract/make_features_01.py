@@ -2,22 +2,26 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+
 def get_metadata(tr_m):
     if 'target' in tr_m.columns:
         return tr_m.drop(['target'], axis = 1)
     else: 
         return tr_m
-    
+
+
 def get_num_points_passband(tes_m, tes):
     gp_size = tes.groupby(['object_id', 'passband']).size()
     gp_size = gp_size.unstack(level = -1).rename(columns = lambda el : 'num_points_passband_' + str(el)).reset_index()
     merged = pd.merge(tes_m[['object_id']], gp_size, how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_num_detected(tes_m, tes):
     gp = tes.groupby('object_id')['detected'].sum().reset_index().rename(columns = {'detected' : 'num_detected'})
     merged = pd.merge(tes_m[['object_id']], gp, how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_num_detected_passband(tes_m, tes):
     gp = tes.groupby(['object_id', 'passband'])['detected'].sum().unstack(level = -1)
@@ -25,16 +29,19 @@ def get_num_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp, on = 'object_id', how = 'left').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_ratio_detected(tes_m, tes):
     gp = tes.groupby('object_id')['detected'].mean().reset_index().rename(columns = {'detected' : 'ratio_detected'})
     merged = pd.merge(tes_m[['object_id']], gp, how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_ratio_detected_passband(tes_m, tes):
     gp = tes.groupby(['object_id', 'passband'])['detected'].mean().unstack(level = -1)
     gp = gp.rename(columns = lambda el : 'ratio_detected_passband_' + str(el)).reset_index()
     merged = pd.merge(tes_m[['object_id']], gp, on = 'object_id', how = 'left').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_mjd_stats_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -45,6 +52,7 @@ def get_mjd_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mjd_stats_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1]
@@ -54,6 +62,7 @@ def get_mjd_stats_detected_passband(tes_m, tes):
     gp.columns = ['mjd_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_mjd_stats_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -67,6 +76,7 @@ def get_diff_mjd_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_mjd_stats_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1].copy()
@@ -79,6 +89,7 @@ def get_diff_mjd_stats_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_stats_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = tes.groupby(['object_id', 'passband'])['flux'].agg(stats_agg).unstack(level = -1)
@@ -87,6 +98,7 @@ def get_flux_stats_passband(tes_m, tes):
     gp.columns = ['flux_' + el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_stats_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -97,6 +109,7 @@ def get_flux_stats_detected_passband(tes_m, tes):
     gp.columns = ['flux_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_stats_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -110,6 +123,7 @@ def get_diff_flux_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_stats_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1].copy()
@@ -122,6 +136,7 @@ def get_diff_flux_stats_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_err_stats_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     gp = tes.groupby(['object_id', 'passband'])['flux_err'].agg(stats_agg).unstack(level = -1)
@@ -130,6 +145,7 @@ def get_flux_err_stats_passband(tes_m, tes):
     gp.columns = ['flux_err_' + el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_flux_err_stats_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -140,6 +156,7 @@ def get_flux_err_stats_detected_passband(tes_m, tes):
     gp.columns = ['flux_err_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_err_stats_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -153,6 +170,7 @@ def get_diff_flux_err_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_err_stats_detected_passband(tes_m, tes):
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
     tes_det = tes[tes['detected'] == 1].copy()
@@ -164,6 +182,7 @@ def get_diff_flux_err_stats_detected_passband(tes_m, tes):
     gp.columns = ['diff_flux_err_' + el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_curve_angle_stats_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -182,6 +201,7 @@ def get_curve_angle_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_curve_angle_stats_detected_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -198,6 +218,7 @@ def get_curve_angle_stats_detected_passband(tes_m, tes):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_curve_angle_stats_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
@@ -219,6 +240,7 @@ def get_diff_curve_angle_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_curve_angle_stats_detected_passband(tes_m, tes):
     col_name_agg = 'curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -239,6 +261,7 @@ def get_diff_curve_angle_stats_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_abs_curve_angle_stats_passband(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -255,6 +278,7 @@ def get_abs_curve_angle_stats_passband(tes_m, tes):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_abs_curve_angle_stats_detected_passband(tes_m, tes):
     col_name_agg = 'abs_curve_angle'
@@ -273,6 +297,7 @@ def get_abs_curve_angle_stats_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_stats_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -287,6 +312,7 @@ def get_flux_n_sigma_stats_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -300,6 +326,7 @@ def get_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_flux_n_sigma_stats_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
@@ -318,6 +345,7 @@ def get_diff_flux_n_sigma_stats_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_diff_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     col_name_agg = 'flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -335,6 +363,7 @@ def get_diff_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_stats_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -350,6 +379,7 @@ def get_mm_scaled_flux_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_stats_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -367,6 +397,7 @@ def get_mm_scaled_flux_stats_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_stats_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -386,6 +417,7 @@ def get_diff_mm_scaled_flux_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_stats_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux'
@@ -407,6 +439,7 @@ def get_diff_mm_scaled_flux_stats_detected_passband(tes_m, tes):
     
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_n_sigma_stats_passband(tes_m, tes, n):
     col_name_agg = 'mm_scaled_flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -423,6 +456,7 @@ def get_mm_scaled_flux_n_sigma_stats_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     col_name_agg = 'mm_scaled_flux_' + str(n) + '_sigma'
@@ -441,6 +475,7 @@ def get_mm_scaled_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_n_sigma_stats_passband(tes_m, tes, n):
     col_name_agg = 'mm_scaled_flux_' + str(n) + '_sigma'
@@ -462,6 +497,7 @@ def get_diff_mm_scaled_flux_n_sigma_stats_passband(tes_m, tes, n):
     
     return merged.astype(np.float32)
 
+
 def get_diff_mm_scaled_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     col_name_agg = 'mm_scaled_flux_' + str(n) + '_sigma'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -482,6 +518,7 @@ def get_diff_mm_scaled_flux_n_sigma_stats_detected_passband(tes_m, tes, n):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_hist_passband(tes_m, tes, num_split):
     col_name_agg = 'mm_scaled_flux'
@@ -506,6 +543,7 @@ def get_mm_scaled_flux_hist_passband(tes_m, tes, num_split):
         mergeds.append(merged)
     concated = pd.concat(mergeds, axis = 1)
     return concated.astype(np.float32)
+
 
 def get_mm_scaled_flux_hist_detected_passband(tes_m, tes, num_split):
     col_name_agg = 'mm_scaled_flux'
@@ -532,6 +570,7 @@ def get_mm_scaled_flux_hist_detected_passband(tes_m, tes, num_split):
     concated = pd.concat(mergeds, axis = 1)
     return concated.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_stats_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -551,6 +590,7 @@ def get_dist_squared_shifted_flux_stats_passband(tr_m, tr):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_stats_detected_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -572,6 +612,7 @@ def get_dist_squared_shifted_flux_stats_detected_passband(tr_m, tr):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_stats_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -595,6 +636,7 @@ def get_diff_dist_squared_shifted_flux_stats_passband(tr_m, tr):
     gp.columns = ['diff_' + col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_stats_detected_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux'
@@ -620,6 +662,7 @@ def get_diff_dist_squared_shifted_flux_stats_detected_passband(tr_m, tr):
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -640,6 +683,7 @@ def get_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -662,6 +706,7 @@ def get_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr_m, tr
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -686,6 +731,7 @@ def get_diff_dist_squared_shifted_flux_min_corrected_stats_passband(tr_m, tr):
     gp.columns = ['diff_' + col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr_m, tr):
     col_name_agg = 'dist_squared_shifted_flux_min_corrected'
@@ -712,6 +758,7 @@ def get_diff_dist_squared_shifted_flux_min_corrected_stats_detected_passband(tr_
     merged = pd.merge(tr_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_curve_angle_stats_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -733,6 +780,7 @@ def get_mm_scaled_flux_curve_angle_stats_passband(tes_m, tes):
     
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_curve_angle_stats_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -753,6 +801,7 @@ def get_mm_scaled_flux_curve_angle_stats_detected_passband(tes_m, tes):
     gp.columns = [col_name_agg + '_' +  el1 + '_passband_' + str(el2) + '_detected' for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_curve_angle_stats_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux_curve_angle'
@@ -776,6 +825,7 @@ def get_diff_mm_scaled_flux_curve_angle_stats_passband(tes_m, tes):
     gp.columns = ['diff_' + col_name_agg + '_' +  el1 + '_passband_' + str(el2) for (el1, el2) in zip(names_1, names_2)]
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
+
 
 def get_diff_mm_scaled_flux_curve_angle_stats_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux_curve_angle'
@@ -801,6 +851,7 @@ def get_diff_mm_scaled_flux_curve_angle_stats_detected_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     return merged.astype(np.float32)
 
+
 def get_mm_scaled_flux_abs_curve_angle_stats_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux_abs_curve_angle'
     stats_agg = ['mean', 'sum', 'median', 'min', 'max', 'var']
@@ -821,6 +872,7 @@ def get_mm_scaled_flux_abs_curve_angle_stats_passband(tes_m, tes):
     merged = pd.merge(tes_m[['object_id']], gp.reset_index(), how = 'left', on = 'object_id').drop(['object_id'], axis = 1)
     
     return merged.astype(np.float32)
+
 
 def get_mm_scaled_flux_abs_curve_angle_stats_detected_passband(tes_m, tes):
     col_name_agg = 'mm_scaled_flux_abs_curve_angle'

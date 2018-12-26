@@ -1,8 +1,5 @@
-import numpy as np
 import matplotlib
 matplotlib.use('agg')
-import pandas as pd
-from tqdm import tqdm
 import feets
 import GPy
 from sklearn.preprocessing import StandardScaler
@@ -10,7 +7,10 @@ import warnings
 from joblib import Parallel, delayed
 import sys
 sys.path.append('..')
-from scripts.utils import * 
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
 
 def get_mjd_flux_nan_masks(tr_m, tr):
     new_df = pd.DataFrame(np.repeat(tr_m['object_id'], 6), columns = ['object_id']).reset_index(drop = True).reset_index()
@@ -23,6 +23,7 @@ def get_mjd_flux_nan_masks(tr_m, tr):
     flux_uns = unstack['flux'].values
     nan_masks = ~np.isnan(mjd_uns)
     return mjd_uns.astype(np.float32), flux_uns, nan_masks
+
 
 def process_01(X, y):
     length = 1094.0653999999995
@@ -41,6 +42,7 @@ def process_01(X, y):
     y_reg = y_reg/y_reg.max()
     return y_reg
 
+
 def proc_X_01(tr_m, X):
     feature_names = ['gp_fitted_' + str(i) for i in range(100)]
     X_reshaped = X.reshape(tr_m.shape[0], 6 * 100)
@@ -50,6 +52,7 @@ def proc_X_01(tr_m, X):
         cols += [el + '_passband_' + str(i) for el in feature_names]
     f_tr.columns = cols
     return f_tr
+
 
 def get_gp_fitted(tr_m, tr):
     warnings.filterwarnings('ignore')
@@ -61,6 +64,7 @@ def get_gp_fitted(tr_m, tr):
         X[i] = process_01(mjd, flux)
     f_tr = proc_X_01(tr_m, X)
     return f_tr
+
 
 def get_mjd_flux_flux_err_nan_masks(tr_m, tr):
     new_df = pd.DataFrame(np.repeat(tr_m['object_id'], 6), columns = ['object_id']).reset_index(drop = True).reset_index()
@@ -75,6 +79,7 @@ def get_mjd_flux_flux_err_nan_masks(tr_m, tr):
     nan_masks = ~np.isnan(mjd_uns)
     return mjd_uns.astype(np.float32), flux_uns.astype(np.float32), flux_err_uns.astype(np.float32), nan_masks
 
+
 def process_02(lc):
     if lc[0].shape[0] < 20:
         return np.full(63, np.nan, dtype = np.float32)
@@ -84,6 +89,7 @@ def process_02(lc):
     except:
         return np.full(63, np.nan, dtype = np.float32)
     return values.astype(np.float32)
+
 
 def proc_X_02(tr_m, X):
     feature_names = ['Amplitude',
@@ -156,6 +162,7 @@ def proc_X_02(tr_m, X):
         cols += [el + '_passband_' + str(i) for el in feature_names]
     f_tr.columns = cols
     return f_tr
+
 
 def get_feets(tr_m, tr):
     warnings.filterwarnings('ignore')
