@@ -6,8 +6,7 @@ import feather
 import gc
 import os
 import sys
-sys.path.append('..')
-from scripts.utils import *
+from utils import *
 from catboost import CatBoostClassifier, FeaturesData
 from tqdm import tqdm
 

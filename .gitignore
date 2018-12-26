@@ -2,3 +2,4 @@ scripts/.gitkeep
 scripts/catboost_info
 fe_extract/.gitkeep
 .idea/*
+venv/*

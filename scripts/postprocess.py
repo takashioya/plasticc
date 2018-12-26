@@ -1,6 +1,5 @@
 import sys
-sys.path.append('..')
-from scripts.utils import * 
+from utils import *
 from tqdm import tqdm
 import feather
 import numpy as np
