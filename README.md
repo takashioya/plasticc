@@ -112,6 +112,8 @@ cd mamas/
 unzip prepare.zip
 cp -r prepare/* .
 cd ../scripts
+python preprocess_01.py
+python preprocess_02.py
 python predict.py
 python postprocess.py
 ```
