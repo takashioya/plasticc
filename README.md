@@ -5,12 +5,15 @@ https://www.kaggle.com/c/PLAsTiCC-2018/discussion/75131
 
 # environment
 I used pyenv virtualenv to set up the environment.
+I think `catboost==0.10.4.1` is important, but the versions of the other libraries won't affect the score so much.
 ```
 $ pyenv install 3.5.1
 $ pyenv virtualenv 3.5.1 plasticc
 $ pyenv activate plasticc
 $ pip install -r requirements.txt
 ```
+
+
 
 # datasets & result files
 I will upload prepare.zip for the host, which contains these directories. <br>
