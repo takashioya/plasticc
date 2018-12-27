@@ -105,13 +105,13 @@ python postprocess.py
 Then, mamas/sub/host_sub.csv.gz will be generated. <br>
 
 - `short version` : <br>
-It's a short version, which will take about 2 hours.
+It's a short version, which will take about 4 hours.
 I use extracted features and trained model here.
 ```
 cd mamas/
 unzip prepare.zip
 cp -r prepare/* .
-cd ../scripts
+cd scripts
 python preprocess_01.py
 python preprocess_02.py
 python predict.py
