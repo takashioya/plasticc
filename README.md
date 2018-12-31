@@ -10,6 +10,10 @@ I think `catboost==0.10.4.1` is important, but the versions of the other librari
 $ pyenv install 3.5.1
 $ pyenv virtualenv 3.5.1 plasticc
 $ pyenv activate plasticc
+$ pip install --upgrade pip
+$ pip install cython==0.27.3
+$ pip install numpy==1.13.0
+$ pip install PyYAML==3.12
 $ pip install -r requirements.txt
 ```
 
