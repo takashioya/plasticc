@@ -16,7 +16,8 @@ $ pip install numpy==1.13.0
 $ pip install PyYAML==3.12
 $ pip install -r requirements.txt
 ```
-
+I used n1-standard-64 in Google Cloud Engine, which has 240GB RAM and 64 CPUs. <br>
+OS/Platform : Ubuntu 16.04 <br>
 
 
 # datasets & result files
