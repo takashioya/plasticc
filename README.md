@@ -106,6 +106,7 @@ python save_features_test_04.py
 python save_features_test_05.py
 python save_features_test_06.py
 python save_features_nyanp.py
+python save_features_for_yuval.py
 python train.py
 python predict.py
 python postprocess.py
