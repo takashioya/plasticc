@@ -1,0 +1,1 @@
+{"RAW_DATA_DIR": "./data/", "TRAIN_DATA_CLEAN_PATH": "./features/*_train.npy", "TEST_DATA_CLEAN_PATH": "./features/*_test.npy", "MODEL_CHECKPOINT_DIR": "./models/", "SUBMISSION_DIR": "./sub/"}
