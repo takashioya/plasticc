@@ -43,7 +43,7 @@ It contains feature names and the number of rounds used for training.
     pickle object that contains the number of rounds.
     - `whole_fn_s.npy`<br>
     numpy array that contains all feature names.
-    - `mamas_feature_names_v1.npy`<br>
+    - `mamas_feature_names_*.npy`<br>
     the names of features that yuval used.
 
 
