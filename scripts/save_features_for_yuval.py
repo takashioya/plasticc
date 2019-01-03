@@ -15,11 +15,11 @@ def main():
     np.save('../features/mamas_feat_v2_train.npy', X)
     np.save('../features/mamas_feat_v2_test.npy', X_test)
 
-    fn_s = np.load('../fi/mamas_feature_names_v2.npy')
+    fn_s = np.load('../fi/mamas_feature_names_v3.npy')
     X = load_arr(fn_s, 'train')
     X_test = load_arr(fn_s, 'test')
-    np.save('../features/mamas_feat_v2_train.npy', X)
-    np.save('../features/mamas_feat_v2_test.npy', X_test)
+    np.save('../features/mamas_feat_v3_train.npy', X)
+    np.save('../features/mamas_feat_v3_test.npy', X_test)
 
 if __name__ == '__main__':
     main()
