@@ -9,7 +9,7 @@ Babel==2.4.0
 bcrypt==3.1.4
 beautifulsoup4==4.6.3
 bhtsne==0.1.9
-bleach==1.5.0
+bleach==3.3.0
 catboost==0.10.4.1
 category-encoders==1.2.6
 celerite==0.3.0
