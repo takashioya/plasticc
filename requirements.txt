@@ -114,7 +114,7 @@ pdfkit==0.6.1
 pdvega==0.1
 pexpect==4.2.1
 pickleshare==0.7.4
-Pillow==6.2.0
+Pillow==8.1.1
 pluggy==0.8.0
 pox==0.2.3
 ppft==1.6.4.7.1
