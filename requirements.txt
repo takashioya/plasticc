@@ -5,7 +5,7 @@ astropy==3.0.5
 astroquery==0.3.8
 atomicwrites==1.2.1
 attrs==18.2.0
-Babel==2.4.0
+Babel==2.9.1
 bcrypt==3.1.4
 beautifulsoup4==4.6.3
 bhtsne==0.1.9
