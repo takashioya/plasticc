@@ -79,7 +79,7 @@ kiwisolver==1.0.1
 lightgbm==2.0.10
 line-profiler==2.1.2
 llvmlite==0.26.0
-lxml==4.1.1
+lxml==4.9.1
 Markdown==2.6.10
 MarkupSafe==1.0
 matplotlib==2.2.2
