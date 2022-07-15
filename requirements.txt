@@ -31,7 +31,7 @@ dask==0.18.0
 deap==1.2.2
 decorator==4.1.2
 dill==0.2.7.1
-distributed==1.24.2
+distributed==2021.10.0
 docutils==0.13.1
 entrypoints==0.2.3
 enum34==1.1.6
