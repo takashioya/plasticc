@@ -85,7 +85,7 @@ MarkupSafe==1.0
 matplotlib==2.2.2
 mccabe==0.6.1
 memory-profiler==0.47
-mistune==0.8.1
+mistune==2.0.3
 mlcrate==0.1.0
 mock==2.0.0
 more-itertools==4.3.0
