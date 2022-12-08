@@ -13,7 +13,7 @@ bleach==1.5.0
 catboost==0.10.4.1
 category-encoders==1.2.6
 celerite==0.3.0
-certifi==2017.4.17
+certifi==2022.12.7
 cffi==1.11.5
 chainer==2.0.0
 chardet==3.0.4
